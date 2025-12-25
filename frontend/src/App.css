@@ -1,0 +1,116 @@
+/* RESET : On s'assure que tout part sur de bonnes bases */
+* {
+  box-sizing: border-box;
+}
+
+/* 1. On transforme le body en gestionnaire d'espace (Flexbox) */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  
+  /* C'est ici que la magie opère pour le centrage */
+  display: flex;
+  justify-content: center; /* Centre horizontalement (Gauche/Droite) */
+  min-height: 100vh;       /* Force la page à faire 100% de la hauteur */
+}
+
+/* 2. On ajuste le conteneur */
+.app-container {
+  background-color: white;
+  width: 100%;             /* Prend toute la largeur disponible... */
+  max-width: 800px;        /* ...mais s'arrête à 800px */
+  margin-top: 50px;        /* Espace en haut */
+  margin-bottom: 50px;     /* Espace en bas */
+  height: fit-content;     /* La hauteur s'adapte au contenu (la liste) */
+  
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
+
+/* LE FORMULAIRE */
+.expense-form {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+  
+  /* Mise en page flexible */
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap; /* Passe à la ligne sur mobile */
+}
+
+.input-field {
+  flex: 1; /* Prend la place disponible */
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 16px;
+  min-width: 150px;
+}
+
+.submit-btn {
+  background-color: #007bff; /* Bleu standard */
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3; /* Bleu plus fonce au survol */
+}
+
+/* LA LISTE */
+.expense-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.expense-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.expense-item:last-child {
+  border-bottom: none;
+}
+
+.expense-item:hover {
+  background-color: #fcfcfc;
+}
+
+.expense-category {
+  background-color: #e2e6ea;
+  color: #495057;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+.expense-amount {
+  font-weight: bold;
+  color: #2c3e50;
+  font-size: 1.1em;
+}

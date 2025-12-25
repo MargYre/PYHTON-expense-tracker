@@ -2,6 +2,7 @@ from typing import List
 from fastapi import FastAPI, HTTPException
 from sqlmodel import Session, select
 from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
 
 # --- NOS IMPORTS PERSO ---
 from database import engine, create_db_and_tables
@@ -14,6 +15,14 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # On autorise React
+    allow_credentials=True,
+    allow_methods=["*"],    # On autorise tout (GET, POST, PUT, DELETE)
+    allow_headers=["*"],
+)
 
 # --- LES ROUTES ---
 
