@@ -95,3 +95,14 @@ def delete_expense(expense_id: int):
         session.commit()
         
         return {"ok": True}
+# Route pour avoir le TOTAL (Business Logic)
+@app.get("/expenses/total/sum")
+def get_total_expenses():
+    with Session(engine) as session:
+        # On récupère toutes les dépenses
+        expenses = session.exec(select(Expense)).all()
+        
+        # On fait la somme des montants (la logique métier)
+        total = sum([e.amount for e in expenses])
+        
+        return {"total_amount": total, "count": len(expenses)}
