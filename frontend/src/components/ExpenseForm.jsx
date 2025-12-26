@@ -64,7 +64,7 @@ function ExpenseForm({ onSaveExpense, editingExpense }) {
       <button 
         type="submit" 
         className="submit-btn"
-        style={{ backgroundColor: editingExpense ? '#f6ad55' : '#646cff' }}
+        style={{ backgroundColor: editingExpense ? '#764ba2' : '#646cff' }}
       >
         {editingExpense ? "Modifier" : "Ajouter"}
       </button>

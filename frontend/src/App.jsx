@@ -92,13 +92,11 @@ function App() {
       
       <TotalDisplay total={total} />
 
-      {/* 4. On passe les nouvelles props au formulaire */}
       <ExpenseForm 
         onSaveExpense={handleSaveExpense} 
         editingExpense={editingExpense} 
       />
 
-      {/* 5. On passe la fonction d'édition à la liste */}
       <ExpenseList 
         expenses={expenses} 
         onDelete={handleDelete} 
