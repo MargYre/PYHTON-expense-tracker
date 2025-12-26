@@ -1,7 +1,7 @@
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaPen } from "react-icons/fa"; // N'oublie pas d'importer FaPen
 
-// Il reçoit la liste des dépenses (expenses) et la fonction pour supprimer (onDelete)
-function ExpenseList({ expenses, onDelete }) {
+// On ajoute 'onEdit' dans les props reçues
+function ExpenseList({ expenses, onDelete, onEdit }) {
   return (
     <ul className="expense-list">
       {expenses.map(expense => (
@@ -13,6 +13,16 @@ function ExpenseList({ expenses, onDelete }) {
           
           <div className="expense-actions">
             <span className="expense-amount">{expense.amount} €</span>
+            
+            <button 
+              className="delete-btn" 
+              style={{ color: '#667eea', marginRight: '5px' }}
+              onClick={() => onEdit(expense)}
+              title="Modifier"
+            >
+              <FaPen size={14} />
+            </button>
+
             <button 
               className="delete-btn" 
               onClick={() => onDelete(expense.id)}

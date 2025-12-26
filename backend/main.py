@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # --- NOS IMPORTS PERSO ---
 from database import engine, create_db_and_tables
-from models import Expense  # <--- On importe la classe qu'on vient de bouger
+from models import Expense
 
 # --- LE CYCLE DE VIE ---
 @asynccontextmanager
@@ -18,9 +18,9 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # On autorise React
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
-    allow_methods=["*"],    # On autorise tout (GET, POST, PUT, DELETE)
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -44,6 +44,7 @@ def create_expense(expense: Expense):
         session.refresh(expense)
         return expense
 
+# --- C'EST LA SEULE VERSION DU PUT QU'IL FAUT GARDER ---
 @app.put("/expenses/{expense_id}")
 def update_expense(expense_id: int, new_data: Expense):
     with Session(engine) as session:
@@ -60,6 +61,7 @@ def update_expense(expense_id: int, new_data: Expense):
         session.commit()
         session.refresh(db_expense)
         return db_expense
+# -------------------------------------------------------
 
 @app.delete("/expenses/{expense_id}")
 def delete_expense(expense_id: int):

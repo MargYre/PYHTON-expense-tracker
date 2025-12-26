@@ -1,23 +1,39 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-function ExpenseForm({ onAddExpense }) {
-  // Le formulaire gère ses propres états !
+function ExpenseForm({ onSaveExpense, editingExpense }) {
   const [label, setLabel] = useState("")
   const [amount, setAmount] = useState("")
   const [category, setCategory] = useState("")
 
+  useEffect(() => {
+    if (editingExpense) {
+      setLabel(editingExpense.label)
+      setAmount(editingExpense.amount)
+      setCategory(editingExpense.category)
+    } else {
+      setLabel("")
+      setAmount("")
+      setCategory("")
+    }
+  }, [editingExpense])
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    // On prépare l'objet
-    const newExpense = { label, amount: parseFloat(amount), category }
     
-    // On l'envoie au parent (App.jsx) via la fonction onAddExpense
-    onAddExpense(newExpense)
+    const expenseData = { 
+      id: editingExpense ? editingExpense.id : null,
+      label, 
+      amount: parseFloat(amount), 
+      category 
+    }
 
-    // On vide les champs
-    setLabel("")
-    setAmount("")
-    setCategory("")
+    onSaveExpense(expenseData)
+
+    if (!editingExpense) {
+        setLabel("")
+        setAmount("")
+        setCategory("")
+    } 
   }
 
   return (
@@ -44,7 +60,14 @@ function ExpenseForm({ onAddExpense }) {
         onChange={e => setCategory(e.target.value)}
         required
       />
-      <button type="submit" className="submit-btn">Ajouter</button>
+      
+      <button 
+        type="submit" 
+        className="submit-btn"
+        style={{ backgroundColor: editingExpense ? '#f6ad55' : '#646cff' }}
+      >
+        {editingExpense ? "Modifier" : "Ajouter"}
+      </button>
     </form>
   )
 }
