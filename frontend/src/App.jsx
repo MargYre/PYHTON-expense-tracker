@@ -1,23 +1,34 @@
 import { useState, useEffect } from 'react'
-import './App.css'
+import { FaWallet } from "react-icons/fa";
+import './App.scss'
+import TotalDisplay from './components/TotalDisplay'
+import ExpenseForm from './components/ExpenseForm'
+import ExpenseList from './components/ExpenseList'
 
 function App() {
   const [expenses, setExpenses] = useState([])
-  const [label, setLabel] = useState("")
-  const [amount, setAmount] = useState("")
-  const [category, setCategory] = useState("")
+  const [total, setTotal] = useState(0)
 
-  useEffect(() => {
+  const fetchTotal = () => {
+    fetch('http://localhost:8000/expenses/total/sum')
+      .then(response => response.json())
+      .then(data => setTotal(data.total_amount))
+      .catch(error => console.error('Erreur total:', error))
+  }
+
+  const fetchExpenses = () => {
     fetch('http://localhost:8000/expenses/')
       .then(response => response.json())
       .then(data => setExpenses(data))
       .catch(error => console.error('Erreur:', error))
+  }
+
+  useEffect(() => {
+    fetchExpenses()
+    fetchTotal() 
   }, [])
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const newExpense = { label, amount: parseFloat(amount), category }
-
+  const handleAddExpense = (newExpense) => {
     fetch('http://localhost:8000/expenses/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -26,53 +37,31 @@ function App() {
     .then(response => response.json())
     .then(data => {
       setExpenses([...expenses, data])
-      setLabel("")
-      setAmount("")
-      setCategory("")
+      fetchTotal()
+    })
+  }
+
+  const handleDelete = (id) => {
+    fetch(`http://localhost:8000/expenses/${id}`, {
+      method: 'DELETE'
+    })
+    .then(() => {
+      setExpenses(expenses.filter(expense => expense.id !== id))
+      fetchTotal()
     })
   }
 
   return (
     <div className="app-container">
-      <h1 className="title">Mon Expense Tracker 💸</h1>
+      <h1 className="title">
+        Mon Expense Tracker <FaWallet style={{ marginLeft: '10px', color: '#667eea' }} />
+      </h1>
+      
+      <TotalDisplay total={total} />
 
-      <form onSubmit={handleSubmit} className="expense-form">
-        <input 
-          className="input-field"
-          placeholder="Quoi ?" 
-          value={label}
-          onChange={e => setLabel(e.target.value)}
-          required
-        />
-        <input 
-          className="input-field"
-          type="number" 
-          placeholder="Montant (€)" 
-          value={amount}
-          onChange={e => setAmount(e.target.value)}
-          required
-        />
-        <input 
-          className="input-field"
-          placeholder="Catégorie" 
-          value={category}
-          onChange={e => setCategory(e.target.value)}
-          required
-        />
-        <button type="submit" className="submit-btn">Ajouter</button>
-      </form>
+      <ExpenseForm onAddExpense={handleAddExpense} />
 
-      <ul className="expense-list">
-        {expenses.map(expense => (
-          <li key={expense.id} className="expense-item">
-            <span>
-              <strong>{expense.label}</strong>
-              <span className="expense-category">{expense.category}</span>
-            </span>
-            <span>{expense.amount} €</span>
-          </li>
-        ))}
-      </ul>
+      <ExpenseList expenses={expenses} onDelete={handleDelete} />
     </div>
   )
 }

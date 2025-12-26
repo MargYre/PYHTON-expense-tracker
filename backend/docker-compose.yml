@@ -1,26 +1,45 @@
+version: "3.8"
+
 services:
-  api:
+  # 1. BACKEND (Renommé pour la cohérence)
+  backend: 
     build: .
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+    # Commande importante pour que Docker écoute partout (0.0.0.0)
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - db
+    environment:
+      # 👇 INDISPENSABLE : On dit à Python où est la base de données
+      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/expensedb
+
+  # 2. BASE DE DONNÉES
   db:
     image: postgres:15
     restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    env_file:  # <-- On lui dit de lire le fichier
-      - .env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      # On remet les valeurs directes pour éviter les erreurs de fichier .env manquant
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: expensedb
     ports:
       - "5432:5432"
+
+  # 3. FRONTEND (React)
+  frontend:
+    build: ../frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
 volumes:
   postgres_data:
