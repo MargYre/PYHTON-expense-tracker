@@ -6,6 +6,9 @@ import TotalDisplay from './components/TotalDisplay'
 import ExpenseForm from './components/ExpenseForm'
 import ExpenseList from './components/ExpenseList'
 
+// Configuration de l'URL de l'API (production ou local)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
 function App() {
   const [expenses, setExpenses] = useState([])
   const [total, setTotal] = useState(0)
@@ -14,14 +17,14 @@ function App() {
   const [editingExpense, setEditingExpense] = useState(null)
 
   const fetchTotal = () => {
-    fetch('http://localhost:8000/expenses/total/sum')
+    fetch(`${API_URL}/expenses/total/sum`)
       .then(response => response.json())
       .then(data => setTotal(data.total_amount))
       .catch(error => console.error('Erreur total:', error))
   }
 
   const fetchExpenses = () => {
-    fetch('http://localhost:8000/expenses/')
+    fetch(`${API_URL}/expenses/`)
       .then(response => response.json())
       .then(data => setExpenses(data))
       .catch(error => console.error('Erreur:', error))
@@ -36,7 +39,7 @@ function App() {
   const handleSaveExpense = (expenseData) => {
     if (expenseData.id) {
       // --- C'EST UNE MODIFICATION (PUT) ---
-      fetch(`http://localhost:8000/expenses/${expenseData.id}`, {
+      fetch(`${API_URL}/expenses/${expenseData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(expenseData)
@@ -50,7 +53,7 @@ function App() {
       .catch(err => console.error("Erreur update:", err))
     } else {
       // --- C'EST UN AJOUT (POST) ---
-      fetch('http://localhost:8000/expenses/', {
+      fetch(`${API_URL}/expenses/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(expenseData)
@@ -65,7 +68,7 @@ function App() {
   }
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:8000/expenses/${id}`, {
+    fetch(`${API_URL}/expenses/${id}`, {
       method: 'DELETE'
     })
     .then(() => {
