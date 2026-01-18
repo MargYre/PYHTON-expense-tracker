@@ -3,10 +3,21 @@ from fastapi import FastAPI, HTTPException
 from sqlmodel import Session, select
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 # --- NOS IMPORTS PERSO ---
 from database import engine, create_db_and_tables
 from models import Expense
+
+# Liste des origines autorisées
+origins = [
+    "http://localhost:5173",  # Frontend local
+]
+
+# Ajouter l'URL du frontend en production
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    origins.append(frontend_url)
 
 # --- LE CYCLE DE VIE ---
 @asynccontextmanager
@@ -18,7 +29,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=origins,  # ✅ CORRECTION ICI
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -44,7 +55,6 @@ def create_expense(expense: Expense):
         session.refresh(expense)
         return expense
 
-# --- C'EST LA SEULE VERSION DU PUT QU'IL FAUT GARDER ---
 @app.put("/expenses/{expense_id}")
 def update_expense(expense_id: int, new_data: Expense):
     with Session(engine) as session:
@@ -52,7 +62,6 @@ def update_expense(expense_id: int, new_data: Expense):
         if not db_expense:
             raise HTTPException(status_code=404, detail="Dépense introuvable")
         
-        # Mise à jour des champs
         db_expense.amount = new_data.amount
         db_expense.label = new_data.label
         db_expense.category = new_data.category
@@ -61,7 +70,6 @@ def update_expense(expense_id: int, new_data: Expense):
         session.commit()
         session.refresh(db_expense)
         return db_expense
-# -------------------------------------------------------
 
 @app.delete("/expenses/{expense_id}")
 def delete_expense(expense_id: int):
