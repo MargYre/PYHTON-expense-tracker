@@ -5,6 +5,15 @@ The entire project is containerized with **Docker**, meaning you don't need to i
 
 ![App Preview](expenses_tracker_screen.png)
 
+## 🌍 Live Demo
+
+**🚀 Live Application:  :** https://expense-tracker-frontend-udlm.onrender.com
+
+**📚 API Documentation :** https://expense-tracker-backend-f5eg.onrender.com/docs
+
+> ⚠️ **Note :** The free backend instance spins down after 15 minutes of inactivity. The first request may take up to 30 seconds to wake up the server.
+
+
 ## 🚀 Features
 
 * **Manage Expenses**: Add, Delete, and List expenses easily.
